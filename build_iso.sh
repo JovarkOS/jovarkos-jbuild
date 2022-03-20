@@ -33,8 +33,8 @@ if [ "$1" == "--help" ] || [ "$1" == "-h" ]; then
     Profile - see <https://wiki.archlinux.org/title/Archiso#Prepare_a_custom_profile>
     for more information
 
-         - Use either 'releng' or 'baseline' as the profile name. (Used in Official Monthly Builds)
-         - Profiles live in the /usr/share/archiso/configs/ directory. (Minimal live configuration)
+         - Use either 'releng' (Used in Official Monthly Builds) or 'baseline' (Minimal live configuration) as the profile name. 
+         - Profiles live in the /usr/share/archiso/configs/ directory. 
     
     "
 
