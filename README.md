@@ -1,9 +1,6 @@
 # jbuild
 Script used to compile an ISO for JovarkOS
 
-
-## jbuild
-Main script used to generate modified ISO images based on Arch Linux.
 ```sh
 Usage: ./build_iso.sh [FLAGS] [OPTIONS]
     Options:
