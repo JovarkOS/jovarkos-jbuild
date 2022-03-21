@@ -4,7 +4,7 @@ Scripts used to configure/compile JovarkOS
 
 ## build_tool.sh
 Main script used to generate modified ISO images based on Arch Linux.
-
+```sh
 Usage: ./build_iso.sh [FLAGS] [OPTIONS]
     Options:
     -b, --build                  Build fresh ISO image using defaults from the $SOURCE/profiledef.sh file
@@ -19,3 +19,4 @@ Usage: ./build_iso.sh [FLAGS] [OPTIONS]
          - Use either 'releng' (Used in Official Monthly Builds) or 'baseline' (Minimal live configuration) as the profile name. 
          - Profiles live in the /usr/share/archiso/configs/ directory. 
     
+```
