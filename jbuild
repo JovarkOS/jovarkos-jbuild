@@ -1,56 +1,76 @@
 #!/bin/bash
 
+
+# Build variables
 WORKING="working"
 OUTPUT="output"
 SOURCE="archlive"
+LIVEROOT="$SOURCE/airootfs"
 ISO="jovarkos-$(date +%Y.%m.%d)-x86_64.iso"
 
+# Configuration variables
+ISO_APPLICATION_NAME="JovarkOS Installer"
+ISO_LABEL="jovarkos-$(date +%Y.%m.%d)-x86_64"
+ISO_PUBLISHER="JovarkOS Development Team"
+
+
 function generic_error() {
-    echo "Incorrect syntax or options. Please use the '--help' flag for more information."
-    exit 1
+    echo "Incorrect syntax or options. Please use the 'help' flag for more information."
+}
+
+function build_iso() {
+    sudo /usr/bin/mkarchiso -v -A $ISO_APPLICATION_NAME -L $ISO_LABEL -P ISO_PUBLISHER -w $WORKING -o $OUTPUT $SOURCE
+}
+
+function run_iso() {
+    /usr/bin/run_archiso -i $OPTARG
+}
+
+function profile() {
+    cp -r "/usr/share/archiso/configs/$OPTARG/" $SOURCE
+    echo "Copied profile $OPTARG to $SOURCE"
+}
+
+function version() {
+    echo "JovarkOS ISO build script v2022.03.25.r2"
+}
+
+function usage() {
+    __usage="Usage: ./build_iso.sh [FLAGS] [OPTIONS]
+    Options:
+    -b, build                     Build fresh ISO image using defaults from the $SOURCE/profiledef.sh file
+    -r, run <path to iso>         Build and run fresh ISO image
+    -p, profile <profile name>    Clean working directory and create 
+    -h, help                      Print this help message
+    -v, version                   Get the version of this script
+    
+    Options for '-p' and 'profile':
+    Profile - see <https://wiki.archlinux.org/title/Archiso#Prepare_a_custom_profile>
+    for more information
+         - Use either 'releng' (Used in Official Monthly Builds) or 'baseline' (Minimal live configuration) as the profile name. 
+         - Profiles live in the /usr/share/archiso/configs/ directory. "
+    echo "$__usage"
 }
 
 
-if [ "$1" == "build" ] || [ "$1" == "-b" ]; then
-    /usr/bin/mkarchiso -v -w $WORKING -o $OUTPUT $SOURCE
-fi
-
-if [ "$1" == "" ] || [ "$(test -z $3)" == 0 ]; then
-    generic_error
-fi
-
-if [ "$1" == "--help" ] || [ "$1" == "-h" ]; then
-    __usage="Usage: ./build_iso.sh [FLAGS] [OPTIONS]
-
-    Options:
-    -b, --build                  Build fresh ISO image using defaults from the $SOURCE/profiledef.sh file
-    -r, --run                    Build and run fresh ISO image
-    -p, --profile <profile name>   Clean working directory and create 
-    -h, --help                   Print this help message
-    -v, --version                Get the version of this script
-    
-    Options for '-p' and '--profile':
-    Profile - see <https://wiki.archlinux.org/title/Archiso#Prepare_a_custom_profile>
-    for more information
-
-         - Use either 'releng' (Used in Official Monthly Builds) or 'baseline' (Minimal live configuration) as the profile name. 
-         - Profiles live in the /usr/share/archiso/configs/ directory. 
-    
-    "
-
-
-    echo "$__usage"
-fi
-
-if [ "$1" == "-p" ] || [ "$1" == "--profile" ]; then
-    cp -r "/usr/share/archiso/configs/$2/" $SOURCE
-    echo "Copied profile $2 to $SOURCE"
-fi
-
-if [ "$1" == "-v" ] || [ "$1" == "--version" ]; then
-    echo "JovarkOS ISO build script v2022.03.20.r1"
-fi
-
-if [ "$1" == "-r" ] || [ "$1" == "--run" ]; then
-    /usr/bin/run_archiso -i $OUTPUT/$ISO
-fi
+while getopts "br:p:hv" opt
+do
+    case $opt in
+        b)
+            build_iso ;;
+        r)
+            run_iso $OPTARG ;;
+        p)
+            profile $OPTARG ;;
+        h)
+            usage ;;
+        v)
+            version ;;
+        \?)
+            echo "Invalid option: $OPTARGS" >&2
+            exit 1 ;;
+        *)
+            echo "Option $opt requires an argument." >&2
+            exit 1 ;;
+    esac
+done
