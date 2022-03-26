@@ -5,21 +5,15 @@
 WORKING="working"
 OUTPUT="output"
 SOURCE="archlive"
-LIVEROOT="$SOURCE/airootfs"
+LIVEROOT="airootfs"
 ISO="jovarkos-$(date +%Y.%m.%d)-x86_64.iso"
-
-# Configuration variables
-ISO_APPLICATION_NAME="JovarkOS Installer"
-ISO_LABEL="jovarkos-$(date +%Y.%m.%d)-x86_64"
-ISO_PUBLISHER="JovarkOS Development Team"
-
 
 function generic_error() {
     echo "Incorrect syntax or options. Please use the 'help' flag for more information."
 }
 
 function build_iso() {
-    sudo /usr/bin/mkarchiso -v -A $ISO_APPLICATION_NAME -L $ISO_LABEL -P ISO_PUBLISHER -w $WORKING -o $OUTPUT $SOURCE
+    sudo /usr/bin/mkarchiso -v -w $WORKING -o $OUTPUT $SOURCE
 }
 
 function run_iso() {
@@ -32,7 +26,7 @@ function profile() {
 }
 
 function version() {
-    echo "JovarkOS ISO build script v2022.03.25.r2"
+    echo "JovarkOS ISO build script v2022.03.25.r3"
 }
 
 function usage() {
