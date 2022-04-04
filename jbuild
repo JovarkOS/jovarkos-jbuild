@@ -13,6 +13,7 @@ function generic_error() {
 }
 
 function build_iso() {
+    sudo cp $config/archlive .
     sudo /usr/bin/mkarchiso -v -w $WORKING -o $OUTPUT $SOURCE
 }
 
@@ -26,7 +27,7 @@ function profile() {
 }
 
 function version() {
-    echo "JovarkOS ISO build script v2022.03.25.r3"
+    echo "JovarkOS ISO build script v2022.04.04.r1"
 }
 
 function usage() {
