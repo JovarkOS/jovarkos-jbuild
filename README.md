@@ -6,7 +6,7 @@ Usage: ./build_iso.sh [FLAGS] [OPTIONS]
     Options:
     -b, build                     Build fresh ISO image using defaults from the $SOURCE/profiledef.sh file
     -r, run <path to iso>         Build and run fresh ISO image
-    -p, profile <profile name>      Clean working directory and create 
+    -p, profile <profile name>    Clean working directory and create 
     -h, help                      Print this help message
     -v, version                   Get the version of this script
     
