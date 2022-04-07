@@ -1,41 +1,68 @@
 <br/>
 <p align="center">
-  <h2 align="center">JBuild</h2>
+  <h3 align="center">JBuild</h3>
 
   <p align="center">
     Compile a customized ISO image based on Arch
     <br/>
     <br/>
-    <a href="https://github.com/jovarkos/jovarkos-jbuild/issues">Report Bug</a>
-    .
-    <a href="https://github.com/jovarkos/jovarkos-jbuild/issues">Request Feature</a>
   </p>
 </p>
 
 ![Downloads](https://img.shields.io/github/downloads/jovarkos/jovarkos-jbuild/total) ![Contributors](https://img.shields.io/github/contributors/jovarkos/jovarkos-jbuild?color=dark-green) ![Issues](https://img.shields.io/github/issues/jovarkos/jovarkos-jbuild) ![License](https://img.shields.io/github/license/jovarkos/jovarkos-jbuild) 
 
-## Usage
-_Run `man jbuild` or view the following information:_
+
+### Prerequisites
+
+The following are required to use `jbuild`:
+
+* Arch-based distribution
+```
+Arch, Manjaro, EndevourOS, etc.
+```
+* make
+
 ```sh
-Usage: ./build_iso.sh [FLAGS] [OPTIONS]
-    Options:
-    -b, build                     Build fresh ISO image using defaults from the $SOURCE/profiledef.sh file
-    -r, run <path to iso>         Build and run fresh ISO image
-    -p, profile <profile name>    Clean working directory and create 
-    -h, help                      Print this help message
-    -v, version                   Get the version of this script
-    
-    Options for '-p' and 'profile':
-    Profile - see <https://wiki.archlinux.org/title/Archiso#Prepare_a_custom_profile>
-    for more information
-         - Use either 'releng' (Used in Official Monthly Builds) or 'baseline' (Minimal live ​configuration) as the profile name. 
-        ​- Profiles live in the /usr/share/archiso/configs/ directory.
+sudo pacman -S make
+```
+
+### Installation
+
+Download from the [JovarkOS Repo](https://repo.jovarkos.org/x86_64/), install with `pacman` (JovarkOS repo added), or clone and run: 
+```sh
+sudo make
+```
+to install the manpage and `jbuild` program.
+
+## Usage
+
+***Create blank `releng` profile to start building:***
+```sh
+jbuild -p releng
+```
+Options: _`releng baseline`_
+
+
+
+***Build ISO file from the `archlive` directory with any modifications:***
+```sh
+sudo jbuild -b
 ```
 
 
-## Installation
-Install from the [JovarkOS Repo](https://repo.jovarkos.org/x86_64) or clone this repo and run `sudo make` to install manually.
+***Run the resulting ISO image in QEMU session:***
+```sh
+jbuild -r jovarkos-2022.04.05-x86_64.iso
+```
 
-## Contributors
 
-- [Lucas Burlingham](https://github.com/lucasburlingham
+### Creating A Pull Request
+
+1. Fork the Project
+2. Commit your Changes 
+4. Open a Pull Request
+
+## License
+
+Distributed under the MIT License. See [LICENSE](https://github.com/jovarkos/jovarkos-jbuild/blob/main/LICENSE.md) for more information.
+
