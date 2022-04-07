@@ -1,6 +1,6 @@
 <br/>
 <p align="center">
-  <h3 align="center">JBuild</h3>
+  <h2 align="center">JBuild</h2>
 
   <p align="center">
     Compile a customized ISO image based on Arch
