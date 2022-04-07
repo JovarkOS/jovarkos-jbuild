@@ -1,6 +1,21 @@
-# jbuild
-Script used to compile an ISO for JovarkOS
+<br/>
+<p align="center">
+  <h3 align="center">JBuild</h3>
 
+  <p align="center">
+    Compile a customized ISO image based on Arch
+    <br/>
+    <br/>
+    <a href="https://github.com/jovarkos/jovarkos-jbuild/issues">Report Bug</a>
+    .
+    <a href="https://github.com/jovarkos/jovarkos-jbuild/issues">Request Feature</a>
+  </p>
+</p>
+
+![Downloads](https://img.shields.io/github/downloads/jovarkos/jovarkos-jbuild/total) ![Contributors](https://img.shields.io/github/contributors/jovarkos/jovarkos-jbuild?color=dark-green) ![Issues](https://img.shields.io/github/issues/jovarkos/jovarkos-jbuild) ![License](https://img.shields.io/github/license/jovarkos/jovarkos-jbuild) 
+
+## Usage
+_Run `man jbuild` or view the following information:_
 ```sh
 Usage: ./build_iso.sh [FLAGS] [OPTIONS]
     Options:
@@ -13,6 +28,14 @@ Usage: ./build_iso.sh [FLAGS] [OPTIONS]
     Options for '-p' and 'profile':
     Profile - see <https://wiki.archlinux.org/title/Archiso#Prepare_a_custom_profile>
     for more information
-         - Use either 'releng' (Used in Official Monthly Builds) or 'baseline' (Minimal live configuration) as the profile name. 
-         - Profiles live in the /usr/share/archiso/configs/ directory.
+         - Use either 'releng' (Used in Official Monthly Builds) or 'baseline' (Minimal live ​configuration) as the profile name. 
+        ​- Profiles live in the /usr/share/archiso/configs/ directory.
 ```
+
+
+## Installation
+Install from the [JovarkOS Repo](https://repo.jovarkos.org/x86_64) or clone this repo and run `sudo make` to install manually.
+
+## Contributors
+
+- [Lucas Burlingham](https://github.com/lucasburlingham
