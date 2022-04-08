@@ -64,5 +64,5 @@ jbuild -r jovarkos-2022.04.05-x86_64.iso
 
 ## License
 
-Distributed under the MIT License. See [LICENSE](https://github.com/jovarkos/jovarkos-jbuild/blob/main/LICENSE.md) for more information.
+Distributed under the MIT License. See [LICENSE](https://github.com/jovarkos/jovarkos-jbuild/blob/main/LICENSE) for more information.
 
