@@ -17,7 +17,7 @@ function build_iso() {
     echo "Clearing $WORKING directory before beginning..."
     sudo rm -rf $WORKING
     echo "Copying $CONFIG/archlive to $(pwd)..."
-    sudo cp $config/archlive .
+    sudo cp $CONFIG/archlive .
     sudo /usr/bin/mkarchiso -v -w $WORKING -o $OUTPUT $SOURCE
 }
 
