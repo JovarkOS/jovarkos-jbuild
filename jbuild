@@ -31,7 +31,7 @@ function profile() {
 }
 
 function version() {
-    echo "JovarkOS ISO build script v2022.04.16.r2"
+    echo "JovarkOS ISO build script v2022.04.16.r3"
 }
 
 function usage() {
