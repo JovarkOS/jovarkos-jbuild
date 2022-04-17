@@ -1,4 +1,4 @@
-# Maintainer: Lucas Burlingham
+# Maintainer: Lucas Burlingham <lucas at lucasburlingham dot me>
 
 # Install manpage to /usr/local/share/
 # View using man jbuild
