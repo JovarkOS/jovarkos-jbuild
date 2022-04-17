@@ -6,6 +6,7 @@ WORKING="working"
 OUTPUT="output"
 SOURCE="archlive"
 LIVEROOT="airootfs"
+CONFIG="jovarkos-config"
 ISO="jovarkos-$(date +%Y.%m.%d)-x86_64.iso"
 
 function generic_error() {
