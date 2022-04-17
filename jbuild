@@ -13,7 +13,9 @@ function generic_error() {
 }
 
 function build_iso() {
+    echo "Clearing $WORKING directory before beginning..."
     sudo rm -rf $WORKING
+    echo "Copying $CONFIG/archlive to $(pwd)..."
     sudo cp $config/archlive .
     sudo /usr/bin/mkarchiso -v -w $WORKING -o $OUTPUT $SOURCE
 }
@@ -28,7 +30,7 @@ function profile() {
 }
 
 function version() {
-    echo "JovarkOS ISO build script v2022.04.16.r1"
+    echo "JovarkOS ISO build script v2022.04.16.r2"
 }
 
 function usage() {
