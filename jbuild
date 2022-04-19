@@ -17,8 +17,9 @@ function error_no-archiso() {
             echo "Please select profile to build upon: "
             echo "    releng (Used in Official Monthly Builds)"
             echo "    baseline (Minimal live configuration)"
-            read -p "Profile: " profile
-	    profile "$profile"
+            read -p "Profile: " PROFILE
+	    cp -r /usr/share/archiso/configs/$PROFILE/ $SOURCE
+        echo "Copied profile $PROFILE to $SOURCE"
         fi
 }
 
@@ -41,7 +42,7 @@ function profile() {
 }
 
 function version() {
-    echo "JovarkOS ISO build script v2022.04.18.r5"
+    echo "JovarkOS ISO build script v2022.04.19.r1"
 }
 
 function usage() {
