@@ -13,7 +13,18 @@ function generic_error() {
     echo "Incorrect syntax or options. Please use the 'help' flag for more information."
 }
 
+function error_no-archiso() {
+	if [ ! -d "$SOURCE" ]; then
+            echo "Please select profile to build upon: "
+            echo "    releng (Used in Official Monthly Builds)"
+            echo "    baseline (Minimal live configuration)"
+            read -p "Profile: " profile
+	    profile "$profile"
+        fi
+}
+
 function build_iso() {
+    error_no-archiso
     echo "Clearing $WORKING directory before beginning..."
     sudo rm -rf $WORKING
     echo "Copying $CONFIG/archlive to $(pwd)..."
@@ -31,14 +42,14 @@ function profile() {
 }
 
 function version() {
-    echo "JovarkOS ISO build script v2022.04.16.r4"
+    echo "JovarkOS ISO build script v2022.04.18.r3"
 }
 
 function usage() {
     __usage="Usage: ./build_iso.sh [FLAGS] [OPTIONS]
     Options:
     -b, build                     Clean working directory and build fresh ISO image using defaults from the $SOURCE/profiledef.sh file
-    -r, run <path to iso>         Build and run fresh ISO image
+    -r, run <path to iso>         Run ISO image
     -p, profile <profile name>    Create new profile using the specified profile name
     -h, help                      Print this help message
     -v, version                   Get the version of this script
