@@ -7,8 +7,6 @@ OUTPUT="output"
 SOURCE="archlive"
 LIVEROOT="airootfs"
 CONFIG="jovarkos-config"
-# Date format: YYY.MM.DD:HH:MM:SS
-ISO="jovarkos-$(date +%Y.%m.%d-%H:%M:%S)-x86_64.iso"
 
 function generic_error() {
     echo "Incorrect syntax or options. Please use the 'help' flag for more information."
@@ -43,7 +41,7 @@ function profile() {
 }
 
 function version() {
-    echo "JovarkOS ISO build script v2022.04.18.r4"
+    echo "JovarkOS ISO build script v2022.04.18.r5"
 }
 
 function usage() {
