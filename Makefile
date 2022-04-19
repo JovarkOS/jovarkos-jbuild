@@ -12,7 +12,7 @@ install: jbuild
 	sudo chmod +x /usr/local/bin/jbuild
 
 # Install all possible components
-all: jbuild man/jbuild.1
+all:
 	sudo cp jbuild /usr/local/bin/
 	sudo chmod +x /usr/local/bin/jbuild
 	sudo mkdir -p /usr/local/share/man/man1/
