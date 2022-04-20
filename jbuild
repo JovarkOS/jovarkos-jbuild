@@ -30,6 +30,18 @@ function build_iso() {
     echo "Copying $CONFIG/archlive to $(pwd)..."
     sudo cp $CONFIG/archlive . -r
     sudo /usr/bin/mkarchiso -v -w $WORKING -o $OUTPUT $SOURCE
+    confirm_run
+}
+
+function confirm_run() {
+    echo "Build complete. Would you like to run the ISO?"
+    read -p "y/N: " RUN
+    if [ "$RUN" == "y" ]; then
+        echo "Running ISO..."
+        sudo /usr/bin/run_archiso -i $OUTPUT/jovarkos-$(date +%Y.%m.%d)-x86_64.iso
+    else
+        echo "Exiting..."
+    fi
 }
 
 function run_iso() {
@@ -42,7 +54,7 @@ function profile() {
 }
 
 function version() {
-    echo "JovarkOS ISO build script v2022.04.19.r1"
+    echo "JovarkOS ISO build script v2022.04.19.r2"
 }
 
 function usage() {
