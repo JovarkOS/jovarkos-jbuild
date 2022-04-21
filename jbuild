@@ -54,7 +54,7 @@ function profile() {
 }
 
 function version() {
-    echo "JovarkOS ISO build script v2022.04.19.r2"
+    echo "JovarkOS ISO build script v2022.04.20.r1"
 }
 
 function usage() {
@@ -79,20 +79,27 @@ while getopts "br:p:hv" opt
 do
     case $opt in
         b)
-            build_iso ;;
+            build_iso 
+            ;;
         r)
-            run_iso $OPTARG ;;
+            run_iso $OPTARG 
+            ;;
         p)
-            profile $OPTARG ;;
+            profile $OPTARG 
+            ;;
         h)
-            usage ;;
+            usage 
+            ;;
         v)
-            version ;;
+            version 
+            ;;
         \?)
             echo "Invalid option: $OPTARGS" >&2
-            exit 1 ;;
+            exit 1 
+            ;;
         *)
             echo "Option $opt requires an argument." >&2
-            exit 1 ;;
+            exit 1 
+            ;;
     esac
 done
