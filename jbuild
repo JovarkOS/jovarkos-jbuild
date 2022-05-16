@@ -1,5 +1,6 @@
 #!/bin/bash
 
+# set -x
 
 # Build variables
 WORKING="working"
@@ -30,7 +31,14 @@ function build_iso() {
     echo "Copying $CONFIG/archlive to $(pwd)..."
     sudo cp $CONFIG/archlive . -r
     sudo /usr/bin/mkarchiso -v -w $WORKING -o $OUTPUT $SOURCE
-    confirm_run
+    # retVal=$?
+    # if [ $retVal -ne 0 ]; then
+    #     echo "There has been an error. Exiting..."
+    # fi
+    # if [ $retVal -ne 1 ]; then
+    #     confirm_run
+    # fi
+    
 }
 
 function confirm_run() {
@@ -38,14 +46,53 @@ function confirm_run() {
     read -p "y/N: " RUN
     if [ "$RUN" == "y" ]; then
         echo "Running ISO..."
-        sudo /usr/bin/run_archiso -i $OUTPUT/jovarkos-$(date +%Y.%m.%d)-x86_64.iso
+        # sudo /usr/bin/run_archiso -i $OUTPUT/jovarkos-$(date +%Y.%m.%d)-x86_64.iso
+        
+        qemu-system-x86_64 \
+        -boot order=d,menu=on,reboot-timeout=5000 \
+        -m "size=3072,slots=0,maxmem=$((3072*1024*1024))" \
+        -smp 2 \
+        -k en-us \
+        -name archiso,process=archiso_0 \
+        -device virtio-scsi-pci,id=scsi0 \
+        -display sdl \
+        -vga virtio \
+        -audiodev pa,id=snd0 \
+        -device ich9-intel-hda \
+        -device hda-output,audiodev=snd0 \
+        -device virtio-net-pci,romfile=,netdev=net0 -netdev user,id=net0,hostfwd=tcp::60022-:22 \
+        -machine type=q35,smm=on,accel=kvm,usb=on,pcspk-audiodev=snd0 \
+        -global ICH9-LPC.disable_s3=1 \
+        -enable-kvm \
+        -serial stdio \
+        -no-reboot \
+        -cdrom $OUTPUT/jovarkos-$(date +%Y.%m.%d)-x86_64.iso
     else
         echo "Exiting..."
     fi
 }
 
 function run_iso() {
-    /usr/bin/run_archiso -i $OPTARG
+    # /usr/bin/run_archiso -i $OPTARG
+    qemu-system-x86_64 \
+        -boot order=d,menu=on,reboot-timeout=5000 \
+        -m "size=3072,slots=0,maxmem=$((3072*1024*1024))" \
+        -smp 2 \
+        -k en-us \
+        -name archiso,process=archiso_0 \
+        -device virtio-scsi-pci,id=scsi0 \
+        -display sdl \
+        -vga virtio \
+        -audiodev pa,id=snd0 \
+        -device ich9-intel-hda \
+        -device hda-output,audiodev=snd0 \
+        -device virtio-net-pci,romfile=,netdev=net0 -netdev user,id=net0,hostfwd=tcp::60022-:22 \
+        -machine type=q35,smm=on,accel=kvm,usb=on,pcspk-audiodev=snd0 \
+        -global ICH9-LPC.disable_s3=1 \
+        -enable-kvm \
+        -serial stdio \
+        -no-reboot \
+        -cdrom $OPTARG
 }
 
 function profile() {
@@ -54,7 +101,7 @@ function profile() {
 }
 
 function version() {
-    echo "JovarkOS ISO build script v2022.04.20.r1"
+    echo "JovarkOS ISO build script v2022.05.15.r1"
 }
 
 function usage() {
@@ -94,7 +141,7 @@ do
             version 
             ;;
         \?)
-            echo "Invalid option: $OPTARGS" >&2
+            echo "Invalid option: $1" >&2
             exit 1 
             ;;
         *)
