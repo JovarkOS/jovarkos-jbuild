@@ -21,7 +21,7 @@ Please select profile to build upon:
     releng (Used in Official Monthly Builds)
     baseline (Minimal live configuration)
 MENU
-        read -p "Profile: " PROFILE
+        read -r -p "Profile: " PROFILE
 
         cp -r /usr/share/archiso/configs/$PROFILE/ $SOURCE
 
@@ -48,7 +48,7 @@ function build_iso() {
 
 function confirm_run() {
 
-    read -p "Build complete. Would you like to run the ISO? y/N: "
+    read -r -p "Build complete. Would you like to run the ISO? y/N: "
 
     if [[ "$REPLY" = "y" ]]; then
         echo "Running ISO..."
