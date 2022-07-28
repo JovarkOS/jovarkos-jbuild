@@ -38,7 +38,7 @@ function build_iso() {
     # if [ $retVal -ne 1 ]; then
     #     confirm_run
     # fi
-    
+
 }
 
 function confirm_run() {
@@ -47,7 +47,7 @@ function confirm_run() {
     if [[ "$RUN" == "y" ]]; then
         echo "Running ISO..."
         # sudo /usr/bin/run_archiso -i $OUTPUT/jovarkos-$(date +%Y.%m.%d)-x86_64.iso
-        
+
         qemu-system-x86_64 \
         -boot order=d,menu=on,reboot-timeout=5000 \
         -m "size=3072,slots=0,maxmem=$((3072*1024*1024))" \
@@ -112,11 +112,11 @@ function usage() {
     -p, profile <profile name>    Create new profile using the specified profile name
     -h, help                      Print this help message
     -v, version                   Get the version of this script
-    
+
     Options for '-p' and 'profile':
     Profile - see <https://wiki.archlinux.org/title/Archiso#Prepare_a_custom_profile>
     for more information
-         - Use either 'releng' (Used in Official Monthly Builds) or 'baseline' (Minimal live configuration) as the profile name. 
+         - Use either 'releng' (Used in Official Monthly Builds) or 'baseline' (Minimal live configuration) as the profile name.
          - Profiles live in the /usr/share/archiso/configs/ directory. "
     echo "$__usage"
 }
@@ -126,27 +126,27 @@ while getopts "br:p:hv" opt
 do
     case $opt in
         b)
-            build_iso 
+            build_iso
             ;;
         r)
-            run_iso $OPTARG 
+            run_iso $OPTARG
             ;;
         p)
-            profile $OPTARG 
+            profile $OPTARG
             ;;
         h)
-            usage 
+            usage
             ;;
         v)
-            version 
+            version
             ;;
         \?)
             echo "Invalid option: $1" >&2
-            exit 1 
+            exit 1
             ;;
         *)
             echo "Option $opt requires an argument." >&2
-            exit 1 
+            exit 1
             ;;
     esac
 done
