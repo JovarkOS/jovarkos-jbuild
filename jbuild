@@ -14,14 +14,19 @@ function generic_error() {
 }
 
 function error_no-archiso() {
-	if [[ ! -d "$SOURCE" ]]; then
-            echo "Please select profile to build upon: "
-            echo "    releng (Used in Official Monthly Builds)"
-            echo "    baseline (Minimal live configuration)"
-            read -p "Profile: " PROFILE
-	    cp -r /usr/share/archiso/configs/$PROFILE/ $SOURCE
+   if [[ ! -d "$SOURCE" ]]; then
+
+cat << MENU
+Please select profile to build upon:
+    releng (Used in Official Monthly Builds)
+    baseline (Minimal live configuration)
+MENU
+        read -p "Profile: " PROFILE
+
+        cp -r /usr/share/archiso/configs/$PROFILE/ $SOURCE
+
         echo "Copied profile $PROFILE to $SOURCE"
-        fi
+   fi
 }
 
 function build_iso() {
@@ -105,20 +110,23 @@ function version() {
 }
 
 function usage() {
-    __usage="Usage: ./build_iso.sh [FLAGS] [OPTIONS]
-    Options:
-    -b, build                     Clean working directory and build fresh ISO image using defaults from the $SOURCE/profiledef.sh file
-    -r, run <path to iso>         Run ISO image
-    -p, profile <profile name>    Create new profile using the specified profile name
-    -h, help                      Print this help message
-    -v, version                   Get the version of this script
 
-    Options for '-p' and 'profile':
-    Profile - see <https://wiki.archlinux.org/title/Archiso#Prepare_a_custom_profile>
-    for more information
-         - Use either 'releng' (Used in Official Monthly Builds) or 'baseline' (Minimal live configuration) as the profile name.
-         - Profiles live in the /usr/share/archiso/configs/ directory. "
-    echo "$__usage"
+cat << USAGE
+Usage: ./build_iso.sh [FLAGS] [OPTIONS]
+Options:
+-b, build                     Clean working directory and build fresh ISO image using defaults from the $SOURCE/profiledef.sh file
+-r, run <path to iso>         Run ISO image
+-p, profile <profile name>    Create new profile using the specified profile name
+-h, help                      Print this help message
+-v, version                   Get the version of this script
+
+Options for '-p' and 'profile':
+Profile - see <https://wiki.archlinux.org/title/Archiso#Prepare_a_custom_profile>
+for more information
+     - Use either 'releng' (Used in Official Monthly Builds) or 'baseline' (Minimal live configuration) as the profile name.
+     - Profiles live in the /usr/share/archiso/configs/ directory.
+USAGE
+
 }
 
 
