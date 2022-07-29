@@ -1,7 +1,5 @@
 #!/bin/bash
 
-# set -x
-
 todayDate='\D{%Y.%m.%d}'
 
 # Build variables
@@ -17,6 +15,7 @@ function error() {
 }
 
 function error_no-archiso() {
+
    if [[ ! -d "$SOURCE" ]]; then
 
 cat << MENU
@@ -33,20 +32,13 @@ MENU
 }
 
 function build_iso() {
+
     error_no-archiso
     echo "Clearing $WORKING directory before beginning..."
     sudo rm -rf $WORKING
     echo "Copying $CONFIG/archlive to $(pwd)..."
     sudo cp $CONFIG/archlive . -r
     sudo /usr/bin/mkarchiso -v -w $WORKING -o $OUTPUT $SOURCE
-    # retVal=$?
-    # if [ $retVal -ne 0 ]; then
-    #     echo "There has been an error. Exiting..."
-    # fi
-    # if [ $retVal -ne 1 ]; then
-    #     confirm_run
-    # fi
-
 }
 
 function confirm_run() {
@@ -55,7 +47,6 @@ function confirm_run() {
 
     if [[ "$REPLY" = "y" ]]; then
         echo "Running ISO..."
-        # sudo /usr/bin/run_archiso -i $OUTPUT/jovarkos-${todayDate@P}-x86_64.iso
 
         qemu-system-x86_64 \
         -boot order=d,menu=on,reboot-timeout=5000 \
@@ -82,7 +73,7 @@ function confirm_run() {
 }
 
 function run_iso() {
-    # /usr/bin/run_archiso -i $OPTARG
+
     qemu-system-x86_64 \
         -boot order=d,menu=on,reboot-timeout=5000 \
         -m "size=3072,slots=0,maxmem=$((3072*1024*1024))" \
