@@ -16,7 +16,7 @@ function error() {
 
 function error_no-archiso() {
 
-   if [[ ! -d "$SOURCE" ]]; then
+   if [[ ! -d "${SOURCE}" ]]; then
 
 cat << MENU
 Please select profile to build upon:
@@ -25,9 +25,9 @@ Please select profile to build upon:
 MENU
         read -r -p "Profile: " PROFILE
 
-        cp -r /usr/share/archiso/configs/$PROFILE/ $SOURCE
+        cp -r /usr/share/archiso/configs/${PROFILE}/ ${SOURCE}
 
-        echo "Copied profile $PROFILE to $SOURCE"
+        echo "Copied profile ${PROFILE} to ${SOURCE}"
    fi
 }
 
@@ -35,22 +35,22 @@ function build_iso() {
 
     error_no-archiso
 
-    echo "Clearing $WORKING directory before beginning..."
+    echo "Clearing ${WORKING} directory before beginning..."
 
-    sudo rm -rf $WORKING
+    sudo rm -rf ${WORKING}
 
-    echo "Copying $CONFIG/archlive to $(pwd)..."
+    echo "Copying ${CONFIG}/archlive to $(pwd)..."
 
-    sudo cp $CONFIG/archlive . -r
+    sudo cp ${CONFIG}/archlive . -r
 
-    sudo /usr/bin/mkarchiso -v -w $WORKING -o $OUTPUT $SOURCE
+    sudo mkarchiso -v -w ${WORKING} -o ${OUTPUT} ${SOURCE}
 }
 
 function confirm_run() {
 
     read -r -p "Build complete. Would you like to run the ISO? y/N: "
 
-    if [[ "$REPLY" = "y" ]]; then
+    if [[ "${REPLY}" = "y" ]]; then
         echo "Running ISO..."
 
         qemu-system-x86_64 \
@@ -71,7 +71,7 @@ function confirm_run() {
         -enable-kvm \
         -serial stdio \
         -no-reboot \
-        -cdrom $OUTPUT/jovarkos-${todayDate@P}-x86_64.iso
+        -cdrom ${OUTPUT}/jovarkos-${todayDate@P}-x86_64.iso
     else
         echo "Exiting..."
     fi
@@ -97,14 +97,14 @@ function run_iso() {
         -enable-kvm \
         -serial stdio \
         -no-reboot \
-        -cdrom $OPTARG
+        -cdrom ${OPTARG}
 }
 
 function profile() {
 
-    cp -r "/usr/share/archiso/configs/$OPTARG/" $SOURCE
+    cp -r "/usr/share/archiso/configs/${OPTARG}/" ${SOURCE}
 
-    echo "Copied profile $OPTARG to $SOURCE"
+    echo "Copied profile ${OPTARG} to ${SOURCE}"
 }
 
 function version() {
@@ -117,7 +117,7 @@ function usage() {
 cat << USAGE
 Usage: ./build_iso.sh [FLAGS] [OPTIONS]
 Options:
--b, build                     Clean working directory and build fresh ISO image using defaults from the $SOURCE/profiledef.sh file
+-b, build                     Clean working directory and build fresh ISO image using defaults from the ${SOURCE}/profiledef.sh file
 -r, run <path to iso>         Run ISO image
 -p, profile <profile name>    Create new profile using the specified profile name
 -h, help                      Print this help message
@@ -133,16 +133,16 @@ USAGE
 }
 
 
-while getopts ":br:p:hv" opt; do
-    case $opt in
+while getopts ":br:p:hv" cmdline_option; do
+    case "${cmdline_option}" in
         (b)
             build_iso
         ;;
         (r)
-            run_iso $OPTARG
+            run_iso ${OPTARG}
         ;;
         (p)
-            profile $OPTARG
+            profile ${OPTARG}
         ;;
         (h)
             usage
@@ -151,12 +151,12 @@ while getopts ":br:p:hv" opt; do
             version
         ;;
         (:)
-            error "Option -$OPTARG requires an argument."
+            error "Option -${OPTARG} requires an argument."
 
             exit 1
         ;;
         ('?')
-            error "Invalid option: -$OPTARG"
+            error "Invalid option: -${OPTARG}"
 
             exit 1
         ;;
