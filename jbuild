@@ -133,7 +133,7 @@ USAGE
 }
 
 
-while getopts "br:p:hv" opt; do
+while getopts ":br:p:hv" opt; do
     case $opt in
         (b)
             build_iso
@@ -151,12 +151,12 @@ while getopts "br:p:hv" opt; do
             version
         ;;
         (:)
-            echo "Option $opt requires an argument." >&2
+            echo "Option -$OPTARG requires an argument." >&2
 
             exit 1
         ;;
         ('?')
-            echo "Invalid option: $1" >&2
+            echo "Invalid option: -$OPTARG" >&2
 
             exit 1
         ;;
