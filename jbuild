@@ -2,6 +2,8 @@
 
 # set -x
 
+todayDate='\D{%Y.%m.%d}'
+
 # Build variables
 WORKING="working"
 OUTPUT="output"
@@ -52,7 +54,7 @@ function confirm_run() {
 
     if [[ "$REPLY" = "y" ]]; then
         echo "Running ISO..."
-        # sudo /usr/bin/run_archiso -i $OUTPUT/jovarkos-$(date +%Y.%m.%d)-x86_64.iso
+        # sudo /usr/bin/run_archiso -i $OUTPUT/jovarkos-${todayDate@P}-x86_64.iso
 
         qemu-system-x86_64 \
         -boot order=d,menu=on,reboot-timeout=5000 \
@@ -72,7 +74,7 @@ function confirm_run() {
         -enable-kvm \
         -serial stdio \
         -no-reboot \
-        -cdrom $OUTPUT/jovarkos-$(date +%Y.%m.%d)-x86_64.iso
+        -cdrom $OUTPUT/jovarkos-${todayDate@P}-x86_64.iso
     else
         echo "Exiting..."
     fi
