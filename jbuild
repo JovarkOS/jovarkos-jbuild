@@ -39,7 +39,7 @@ function build_iso() {
 
     sudo rm -rf ${WORKING}
 
-    echo "Copying ${CONFIG}/archlive to $(pwd)..."
+    echo "Copying ${CONFIG}/archlive to ${PWD}..."
 
     sudo cp ${CONFIG}/archlive . -r
 
