@@ -133,31 +133,32 @@ USAGE
 }
 
 
-while getopts "br:p:hv" opt
-do
+while getopts "br:p:hv" opt; do
     case $opt in
-        b)
+        (b)
             build_iso
-            ;;
-        r)
+        ;;
+        (r)
             run_iso $OPTARG
-            ;;
-        p)
+        ;;
+        (p)
             profile $OPTARG
-            ;;
-        h)
+        ;;
+        (h)
             usage
-            ;;
-        v)
+        ;;
+        (v)
             version
-            ;;
-        \?)
-            echo "Invalid option: $1" >&2
-            exit 1
-            ;;
-        *)
+        ;;
+        (:)
             echo "Option $opt requires an argument." >&2
+
             exit 1
-            ;;
+        ;;
+        ('?')
+            echo "Invalid option: $1" >&2
+
+            exit 1
+        ;;
     esac
 done
