@@ -1,6 +1,6 @@
 #!/bin/bash
 
-# set -x
+todayDate='\D{%Y.%m.%d}'
 
 # Build variables
 WORKING="working"
@@ -9,45 +9,50 @@ SOURCE="archlive"
 LIVEROOT="airootfs"
 CONFIG="jovarkos-config"
 
-function generic_error() {
-    echo "Incorrect syntax or options. Please use the 'help' flag for more information."
+function error() {
+
+    printf "$*\n" >&2
 }
 
 function error_no-archiso() {
-	if [ ! -d "$SOURCE" ]; then
-            echo "Please select profile to build upon: "
-            echo "    releng (Used in Official Monthly Builds)"
-            echo "    baseline (Minimal live configuration)"
-            read -p "Profile: " PROFILE
-	    cp -r /usr/share/archiso/configs/$PROFILE/ $SOURCE
-        echo "Copied profile $PROFILE to $SOURCE"
-        fi
+
+   if [[ ! -d "${SOURCE}" ]]; then
+
+cat << MENU
+Please select profile to build upon:
+    releng (Used in Official Monthly Builds)
+    baseline (Minimal live configuration)
+MENU
+        read -r -p "Profile: " PROFILE
+
+        cp -r /usr/share/archiso/configs/${PROFILE}/ ${SOURCE}
+
+        echo "Copied profile ${PROFILE} to ${SOURCE}"
+   fi
 }
 
 function build_iso() {
+
     error_no-archiso
-    echo "Clearing $WORKING directory before beginning..."
-    sudo rm -rf $WORKING
-    echo "Copying $CONFIG/archlive to $(pwd)..."
-    sudo cp $CONFIG/archlive . -r
-    sudo /usr/bin/mkarchiso -v -w $WORKING -o $OUTPUT $SOURCE
-    # retVal=$?
-    # if [ $retVal -ne 0 ]; then
-    #     echo "There has been an error. Exiting..."
-    # fi
-    # if [ $retVal -ne 1 ]; then
-    #     confirm_run
-    # fi
-    
+
+    echo "Clearing ${WORKING} directory before beginning..."
+
+    sudo rm -rf ${WORKING}
+
+    echo "Copying ${CONFIG}/archlive to ${PWD}..."
+
+    sudo cp ${CONFIG}/archlive . -r
+
+    sudo mkarchiso -v -w ${WORKING} -o ${OUTPUT} ${SOURCE}
 }
 
 function confirm_run() {
-    echo "Build complete. Would you like to run the ISO?"
-    read -p "y/N: " RUN
-    if [ "$RUN" == "y" ]; then
+
+    read -r -p "Build complete. Would you like to run the ISO? y/N: "
+
+    if [[ "${REPLY}" = "y" ]]; then
         echo "Running ISO..."
-        # sudo /usr/bin/run_archiso -i $OUTPUT/jovarkos-$(date +%Y.%m.%d)-x86_64.iso
-        
+
         qemu-system-x86_64 \
         -boot order=d,menu=on,reboot-timeout=5000 \
         -m "size=3072,slots=0,maxmem=$((3072*1024*1024))" \
@@ -66,14 +71,14 @@ function confirm_run() {
         -enable-kvm \
         -serial stdio \
         -no-reboot \
-        -cdrom $OUTPUT/jovarkos-$(date +%Y.%m.%d)-x86_64.iso
+        -cdrom ${OUTPUT}/jovarkos-${todayDate@P}-x86_64.iso
     else
         echo "Exiting..."
     fi
 }
 
 function run_iso() {
-    # /usr/bin/run_archiso -i $OPTARG
+
     qemu-system-x86_64 \
         -boot order=d,menu=on,reboot-timeout=5000 \
         -m "size=3072,slots=0,maxmem=$((3072*1024*1024))" \
@@ -92,61 +97,68 @@ function run_iso() {
         -enable-kvm \
         -serial stdio \
         -no-reboot \
-        -cdrom $OPTARG
+        -cdrom ${OPTARG}
 }
 
 function profile() {
-    cp -r "/usr/share/archiso/configs/$OPTARG/" $SOURCE
-    echo "Copied profile $OPTARG to $SOURCE"
+
+    cp -r "/usr/share/archiso/configs/${OPTARG}/" ${SOURCE}
+
+    echo "Copied profile ${OPTARG} to ${SOURCE}"
 }
 
 function version() {
+
     echo "JovarkOS ISO build script v2022.05.15.r1"
 }
 
 function usage() {
-    __usage="Usage: ./build_iso.sh [FLAGS] [OPTIONS]
-    Options:
-    -b, build                     Clean working directory and build fresh ISO image using defaults from the $SOURCE/profiledef.sh file
-    -r, run <path to iso>         Run ISO image
-    -p, profile <profile name>    Create new profile using the specified profile name
-    -h, help                      Print this help message
-    -v, version                   Get the version of this script
-    
-    Options for '-p' and 'profile':
-    Profile - see <https://wiki.archlinux.org/title/Archiso#Prepare_a_custom_profile>
-    for more information
-         - Use either 'releng' (Used in Official Monthly Builds) or 'baseline' (Minimal live configuration) as the profile name. 
-         - Profiles live in the /usr/share/archiso/configs/ directory. "
-    echo "$__usage"
+
+cat << USAGE
+Usage: ./build_iso.sh [FLAGS] [OPTIONS]
+Options:
+-b, build                     Clean working directory and build fresh ISO image using defaults from the ${SOURCE}/profiledef.sh file
+-r, run <path to iso>         Run ISO image
+-p, profile <profile name>    Create new profile using the specified profile name
+-h, help                      Print this help message
+-v, version                   Get the version of this script
+
+Options for '-p' and 'profile':
+Profile - see <https://wiki.archlinux.org/title/Archiso#Prepare_a_custom_profile>
+for more information
+     - Use either 'releng' (Used in Official Monthly Builds) or 'baseline' (Minimal live configuration) as the profile name.
+     - Profiles live in the /usr/share/archiso/configs/ directory.
+USAGE
+
 }
 
 
-while getopts "br:p:hv" opt
-do
-    case $opt in
-        b)
-            build_iso 
-            ;;
-        r)
-            run_iso $OPTARG 
-            ;;
-        p)
-            profile $OPTARG 
-            ;;
-        h)
-            usage 
-            ;;
-        v)
-            version 
-            ;;
-        \?)
-            echo "Invalid option: $1" >&2
-            exit 1 
-            ;;
-        *)
-            echo "Option $opt requires an argument." >&2
-            exit 1 
-            ;;
+while getopts ":br:p:hv" cmdline_option; do
+    case "${cmdline_option}" in
+        (b)
+            build_iso
+        ;;
+        (r)
+            run_iso ${OPTARG}
+        ;;
+        (p)
+            profile ${OPTARG}
+        ;;
+        (h)
+            usage
+        ;;
+        (v)
+            version
+        ;;
+        (:)
+            error "Option -${OPTARG} requires an argument."
+
+            exit 1
+        ;;
+        ('?')
+            error "Invalid option: -${OPTARG}"
+
+            exit 1
+        ;;
     esac
 done
