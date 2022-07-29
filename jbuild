@@ -34,10 +34,15 @@ MENU
 function build_iso() {
 
     error_no-archiso
+
     echo "Clearing $WORKING directory before beginning..."
+
     sudo rm -rf $WORKING
+
     echo "Copying $CONFIG/archlive to $(pwd)..."
+
     sudo cp $CONFIG/archlive . -r
+
     sudo /usr/bin/mkarchiso -v -w $WORKING -o $OUTPUT $SOURCE
 }
 
@@ -96,11 +101,14 @@ function run_iso() {
 }
 
 function profile() {
+
     cp -r "/usr/share/archiso/configs/$OPTARG/" $SOURCE
+
     echo "Copied profile $OPTARG to $SOURCE"
 }
 
 function version() {
+
     echo "JovarkOS ISO build script v2022.05.15.r1"
 }
 
