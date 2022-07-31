@@ -1,13 +1,13 @@
 #!/usr/bin/env bash
 
-TODAY_DATE='\D{%Y.%m.%d}'
+readonly TODAY_DATE='\D{%Y.%m.%d}'
 
 # Build variables
-WORKING="working"
-OUTPUT="output"
-SOURCE="archlive"
-LIVEROOT="airootfs"
-CONFIG="jovarkos-config"
+readonly WORKING="working"
+readonly OUTPUT="output"
+readonly SOURCE="archlive"
+readonly LIVEROOT="airootfs"
+readonly CONFIG="jovarkos-config"
 
 function error() {
 
