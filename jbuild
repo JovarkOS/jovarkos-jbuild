@@ -1,4 +1,4 @@
-#!/bin/bash
+#!/usr/bin/env bash
 
 todayDate='\D{%Y.%m.%d}'
 
