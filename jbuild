@@ -25,7 +25,7 @@ Please select profile to build upon:
 MENU
         read -r -p "Profile: " PROFILE
 
-        cp -r /usr/share/archiso/configs/${PROFILE}/ ${SOURCE}
+        cp -r "/usr/share/archiso/configs/${PROFILE}" ${SOURCE}
 
         echo "Copied profile ${PROFILE} to ${SOURCE}"
    fi
@@ -97,12 +97,12 @@ function run_iso() {
         -enable-kvm \
         -serial stdio \
         -no-reboot \
-        -cdrom ${OPTARG}
+        -cdrom "${OPTARG}"
 }
 
 function profile() {
 
-    cp -r "/usr/share/archiso/configs/${OPTARG}/" ${SOURCE}
+    cp -r "/usr/share/archiso/configs/${OPTARG}" ${SOURCE}
 
     echo "Copied profile ${OPTARG} to ${SOURCE}"
 }
@@ -139,10 +139,10 @@ while getopts ":br:p:hv" cmdline_option; do
             build_iso
         ;;
         (r)
-            run_iso ${OPTARG}
+            run_iso "${OPTARG}"
         ;;
         (p)
-            profile ${OPTARG}
+            profile "${OPTARG}"
         ;;
         (h)
             usage
