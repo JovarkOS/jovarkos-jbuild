@@ -66,3 +66,12 @@ jbuild -r jovarkos-2022.04.05-x86_64.iso
 
 Distributed under the MIT License. See [LICENSE](https://github.com/jovarkos/jovarkos-jbuild/blob/main/LICENSE) for more information.
 
+
+## Repo Maintenence
+
+* Create manpage using help2man
+```sh
+help2man -N -n "Compile a customized ISO image based on Arch" -o man/jbuild.1 jbuild
+```
+* Update `README.md` with new version number
+* Update `jbuild` with new version number and release date
