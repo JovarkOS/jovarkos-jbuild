@@ -1,6 +1,7 @@
 #!/usr/bin/env bash
 
 readonly TODAY_DATE='\D{%Y.%m.%d}'
+readonly SCRIPT_DATE="v2023.04.14.r2"
 
 # Build variables
 readonly WORKING="working"
@@ -105,18 +106,26 @@ Profile - see <https://wiki.archlinux.org/title/Archiso#Prepare_a_custom_profile
 for more information
     - Use either 'releng' (Used in Official Monthly Builds) or 'baseline' (Minimal live configuration) as the profile name.
     - Profiles live in the /usr/share/archiso/configs/ directory. Listed below is a list of profiles found on this machine.
+
 OPTIONS
 echo "Available profiles:"
 ls /usr/share/archiso/configs/
 }
 
 function profile() {
-    cp -r "/usr/share/archiso/configs/${OPTARG}" ${SOURCE}
-    echo "Copied profile ${OPTARG} to ${SOURCE}"
+    # If no profile is specified, list available profiles
+    if [[ -z "$2" ]]; then
+        list_profiles
+    else
+    # If no path is specified, use the default path
+        3=${SOURCE}
+    fi
+    cp -r "/usr/share/archiso/configs/$1" $3
+    echo "Copied profile $1 to $3"
 }
 
 function version() {
-    echo "JovarkOS ISO build script v2023.04.14.r2"
+    echo "JovarkOS ISO build script ${SCRIPT_DATE}"
 }
 
 function usage() {
@@ -128,7 +137,8 @@ Options:
 -p, --profile <profile name>    Create new profile using the specified profile name. Run without options to see available profiles.
 -h, --help                      Print this help message
 -v, --version                   Get the version of this script
-Users may also omit the '--' in the options above.
+Users may also omit '--' in the options above.
+
 USAGE
 version
 }
@@ -154,7 +164,7 @@ fi
 
 
 
-# Parse command-line options and arguments, and parse and send to functions as needed
+# Parse command-line options and arguments, send to functions as needed
 while [[ $# -gt 0 ]]; do
   case "$1" in
         -b | --build | build)
@@ -170,14 +180,29 @@ while [[ $# -gt 0 ]]; do
             exit 0
             ;;
         -p | --profile | profile)
+            # If no profile is specified, list available profiles
             if [[ -z "$2" ]]; then
                 list_profiles
                 exit 1
             else 
-                PROFILE="$2"
-                profile
-                exit 0
+                # If no path is specified, use the default path
+                if [[ -z "$3" ]]; then
+                    PROFILE="$2"
+                    profile ${PROFILE}
+                    exit 0
+                else 
+                    # If a path is specified, use that path
+                    PROFILE="$2"
+                    SOURCE="$3"
+                    profile ${PROFILE} ${SOURCE}
+                    exit 0
+                fi
             fi
+            ;;
+        --profiles | profiles)
+            # If no profile is specified, list available profiles
+            list_profiles
+            exit 1
             ;;
         -h | --help | help)
             usage
@@ -201,8 +226,8 @@ while [[ $# -gt 0 ]]; do
 done
 
 # If no arguments are provided, print help and exit
-while [[ $# -eq 0 ]]; do
-    error "Please provide an argument."
+if [[ $# -eq 0 ]]; then
+    error "ERROR: Please provide an argument.\n"
     usage
     exit 1
-done
+fi
