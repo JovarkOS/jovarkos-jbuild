@@ -100,11 +100,11 @@ function run_iso() {
 
 function list_profiles() {
 cat << OPTIONS
-    Options for '-p' and '--profile':
-    Profile - see <https://wiki.archlinux.org/title/Archiso#Prepare_a_custom_profile>
-    for more information
-        - Use either 'releng' (Used in Official Monthly Builds) or 'baseline' (Minimal live configuration) as the profile name.
-        - Profiles live in the /usr/share/archiso/configs/ directory. Listed below is a list of profiles found on this machine.
+Options for '-p' and '--profile':
+Profile - see <https://wiki.archlinux.org/title/Archiso#Prepare_a_custom_profile>
+for more information
+    - Use either 'releng' (Used in Official Monthly Builds) or 'baseline' (Minimal live configuration) as the profile name.
+    - Profiles live in the /usr/share/archiso/configs/ directory. Listed below is a list of profiles found on this machine.
 OPTIONS
 echo "Available profiles:"
 ls /usr/share/archiso/configs/
@@ -162,15 +162,19 @@ fi
 # Parse command-line options and arguments, and parse and send to functions as needed
 while [[ $# -gt 0 ]]; do
   case "$1" in
-        -b | --build)
+        -b | --build | build)
             build_iso
             exit 0
             ;;
-        -r | --run)
+        -r | --run | run)
             run_iso
             exit 0
             ;;
-        -p | --profile)
+        -c | --clean | clean)
+            clean
+            exit 0
+            ;;
+        -p | --profile | profile)
             if [[ -z "$2" ]]; then
                 list_profiles
                 exit 1
@@ -180,11 +184,11 @@ while [[ $# -gt 0 ]]; do
                 exit 0
             fi
             ;;
-        -h | --help)
+        -h | --help | help)
             usage
             exit 0
             ;;
-        -v | --version)
+        -v | --version | version)
             version
             exit 0
         ;;
