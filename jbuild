@@ -128,12 +128,7 @@ Options:
 -p, --profile <profile name>    Create new profile using the specified profile name. Run without options to see available profiles.
 -h, --help                      Print this help message
 -v, --version                   Get the version of this script
-
-Options for '-p' and '--profile':
-Profile - see <https://wiki.archlinux.org/title/Archiso#Prepare_a_custom_profile>
-for more information
-     - Use either 'releng' (Used in Official Monthly Builds) or 'baseline' (Minimal live configuration) as the profile name.
-     - Profiles live in the /usr/share/archiso/configs/ directory.
+Users may also omit the '--' in the options above.
 USAGE
 version
 }
