@@ -98,13 +98,25 @@ function run_iso() {
         -cdrom "${OPTARG}"
 }
 
+function list_profiles() {
+cat << OPTIONS
+    Options for '-p' and '--profile':
+    Profile - see <https://wiki.archlinux.org/title/Archiso#Prepare_a_custom_profile>
+    for more information
+        - Use either 'releng' (Used in Official Monthly Builds) or 'baseline' (Minimal live configuration) as the profile name.
+        - Profiles live in the /usr/share/archiso/configs/ directory. Listed below is a list of profiles found on this machine.
+OPTIONS
+echo "Available profiles:"
+ls /usr/share/archiso/configs/
+}
+
 function profile() {
     cp -r "/usr/share/archiso/configs/${OPTARG}" ${SOURCE}
     echo "Copied profile ${OPTARG} to ${SOURCE}"
 }
 
 function version() {
-    echo "JovarkOS ISO build script v2023.04.14.r1"
+    echo "JovarkOS ISO build script v2023.04.14.r2"
 }
 
 function usage() {
@@ -113,11 +125,11 @@ Usage: ./build_iso.sh [FLAG] [OPTIONS]
 Options:
 -b, --build                     Clean working directory and build fresh ISO image using defaults from the ${SOURCE}/profiledef.sh file
 -r, --run <path to iso>         Run ISO image
--p, --profile <profile name>    Create new profile using the specified profile name
+-p, --profile <profile name>    Create new profile using the specified profile name. Run without options to see available profiles.
 -h, --help                      Print this help message
 -v, --version                   Get the version of this script
 
-Options for '-p' and 'profile':
+Options for '-p' and '--profile':
 Profile - see <https://wiki.archlinux.org/title/Archiso#Prepare_a_custom_profile>
 for more information
      - Use either 'releng' (Used in Official Monthly Builds) or 'baseline' (Minimal live configuration) as the profile name.
@@ -159,7 +171,14 @@ while [[ $# -gt 0 ]]; do
             exit 0
             ;;
         -p | --profile)
-            PROFILE="$2"
+            if [[ -z "$2" ]]; then
+                list_profiles
+                exit 1
+            else 
+                PROFILE="$2"
+                profile
+                exit 0
+            fi
             ;;
         -h | --help)
             usage
