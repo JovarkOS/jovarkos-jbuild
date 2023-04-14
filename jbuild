@@ -27,6 +27,11 @@ MENU
    fi
 }
 
+function clean () {
+    echo "Cleaning ${WORKING} directory..."
+    sudo rm -rf ${WORKING}
+}
+
 function no_mkarchiso () {
     error "mkarchiso is not installed. Please install it and try again."
     exit 1
@@ -38,7 +43,9 @@ function build_iso() {
     sudo rm -rf ${WORKING}
     echo "Copying ${CONFIG}/archlive to ${PWD}..."
     sudo cp ${CONFIG}/archlive . -r
-    sudo mkarchiso -v -w ${WORKING} -o ${OUTPUT} ${SOURCE}
+    sudo mkarchiso -w ${WORKING} -o ${OUTPUT} ${SOURCE} -P "JovarkOS Development Team" -L "JovarkOS Live ${TODAY_DATE}" -A "JovarkOS Live"
+    echo "Build complete. ISO is located at ${OUTPUT}/jovarkos-${TODAY_DATE@P}-x86_64.iso"
+    ln -s "${OUTPUT}/jovarkos-${TODAY_DATE@P}-x86_64.iso" > ${OUTPUT}/jovarkos-latest.iso
 }
 
 function confirm_run() {
@@ -57,7 +64,7 @@ function confirm_run() {
         -audiodev pa,id=snd0 \
         -device ich9-intel-hda \
         -device hda-output,audiodev=snd0 \
-        -device virtio-net-pci,romfile=,netdev=net0 -netdev user,id=net0,hostfwd=tcp::60022-:22 \
+        -device virtio-net-pci,romfile=,netdev=net0 -netdev user,id=net0 \
         -machine type=q35,smm=on,accel=kvm,usb=on,pcspk-audiodev=snd0 \
         -global ICH9-LPC.disable_s3=1 \
         -enable-kvm \
@@ -97,7 +104,7 @@ function profile() {
 }
 
 function version() {
-    echo "JovarkOS ISO build script v2023.04.13.r1"
+    echo "JovarkOS ISO build script v2023.04.14.r1"
 }
 
 function usage() {
@@ -116,6 +123,7 @@ for more information
      - Use either 'releng' (Used in Official Monthly Builds) or 'baseline' (Minimal live configuration) as the profile name.
      - Profiles live in the /usr/share/archiso/configs/ directory.
 USAGE
+version
 }
 
 if ! command -v mkarchiso &> /dev/null; then
