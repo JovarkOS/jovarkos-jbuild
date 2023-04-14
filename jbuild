@@ -9,50 +9,42 @@ readonly SOURCE="archlive"
 readonly LIVEROOT="airootfs"
 readonly CONFIG="jovarkos-config"
 
-function error() {
 
+function error() {
     printf "$*\n" >&2
 }
 
-function error_no-archiso() {
-
+function no_archiso_dir() {
    if [[ ! -d "${SOURCE}" ]]; then
-
 cat << MENU
 Please select profile to build upon:
     releng (Used in Official Monthly Builds)
     baseline (Minimal live configuration)
 MENU
         read -r -p "Profile: " PROFILE
-
         cp -r "/usr/share/archiso/configs/${PROFILE}" ${SOURCE}
-
         echo "Copied profile ${PROFILE} to ${SOURCE}"
    fi
 }
 
+function no_mkarchiso () {
+    error "mkarchiso is not installed. Please install it and try again."
+    exit 1
+}
+
 function build_iso() {
-
-    error_no-archiso
-
+    no_archiso_dir
     echo "Clearing ${WORKING} directory before beginning..."
-
     sudo rm -rf ${WORKING}
-
     echo "Copying ${CONFIG}/archlive to ${PWD}..."
-
     sudo cp ${CONFIG}/archlive . -r
-
     sudo mkarchiso -v -w ${WORKING} -o ${OUTPUT} ${SOURCE}
 }
 
 function confirm_run() {
-
     read -r -p "Build complete. Would you like to run the ISO? y/N: "
-
     if [[ "${REPLY}" = "y" ]]; then
         echo "Running ISO..."
-
         qemu-system-x86_64 \
         -boot order=d,menu=on,reboot-timeout=5000 \
         -m "size=3072,slots=0,maxmem=$((3072*1024*1024))" \
@@ -78,7 +70,6 @@ function confirm_run() {
 }
 
 function run_iso() {
-
     qemu-system-x86_64 \
         -boot order=d,menu=on,reboot-timeout=5000 \
         -m "size=3072,slots=0,maxmem=$((3072*1024*1024))" \
@@ -101,27 +92,23 @@ function run_iso() {
 }
 
 function profile() {
-
     cp -r "/usr/share/archiso/configs/${OPTARG}" ${SOURCE}
-
     echo "Copied profile ${OPTARG} to ${SOURCE}"
 }
 
 function version() {
-
-    echo "JovarkOS ISO build script v2022.05.15.r1"
+    echo "JovarkOS ISO build script v2023.04.13.r1"
 }
 
 function usage() {
-
 cat << USAGE
-Usage: ./build_iso.sh [FLAGS] [OPTIONS]
+Usage: ./build_iso.sh [FLAG] [OPTIONS]
 Options:
--b, build                     Clean working directory and build fresh ISO image using defaults from the ${SOURCE}/profiledef.sh file
--r, run <path to iso>         Run ISO image
--p, profile <profile name>    Create new profile using the specified profile name
--h, help                      Print this help message
--v, version                   Get the version of this script
+-b, --build                     Clean working directory and build fresh ISO image using defaults from the ${SOURCE}/profiledef.sh file
+-r, --run <path to iso>         Run ISO image
+-p, --profile <profile name>    Create new profile using the specified profile name
+-h, --help                      Print this help message
+-v, --version                   Get the version of this script
 
 Options for '-p' and 'profile':
 Profile - see <https://wiki.archlinux.org/title/Archiso#Prepare_a_custom_profile>
@@ -129,36 +116,67 @@ for more information
      - Use either 'releng' (Used in Official Monthly Builds) or 'baseline' (Minimal live configuration) as the profile name.
      - Profiles live in the /usr/share/archiso/configs/ directory.
 USAGE
-
 }
 
+if ! command -v mkarchiso &> /dev/null; then
+    error "mkarchiso is not installed. Please install it and try again."
+cat << ERROR
+To install mkarchiso:
+    sudo pacman -S mkarchiso
+ERROR
+    exit 1
+fi
 
-while getopts ":br:p:hv" cmdline_option; do
-    case "${cmdline_option}" in
-        (b)
+
+if ! command -v make &> /dev/null; then
+    error "make is not installed. Please install it and try again."
+cat << ERROR
+To install mkarchiso:
+    sudo pacman -S make
+ERROR
+    exit 1
+fi
+
+
+
+# Parse command-line options and arguments, and parse and send to functions as needed
+while [[ $# -gt 0 ]]; do
+  case "$1" in
+        -b | --build)
             build_iso
-        ;;
-        (r)
-            run_iso "${OPTARG}"
-        ;;
-        (p)
-            profile "${OPTARG}"
-        ;;
-        (h)
+            exit 0
+            ;;
+        -r | --run)
+            run_iso
+            exit 0
+            ;;
+        -p | --profile)
+            PROFILE="$2"
+            ;;
+        -h | --help)
             usage
-        ;;
-        (v)
+            exit 0
+            ;;
+        -v | --version)
             version
+            exit 0
         ;;
-        (:)
-            error "Option -${OPTARG} requires an argument."
-
+        -\? | --?)
+            echo "Invalid option: -$#" >&2
+            usage
             exit 1
         ;;
-        ('?')
-            error "Invalid option: -${OPTARG}"
-
+        :)
+            echo "Option -$# requires an argument." >&2
+            usage
             exit 1
         ;;
-    esac
+  esac
+done
+
+# If no arguments are provided, print help and exit
+while [[ $# -eq 0 ]]; do
+    error "Please provide an argument."
+    usage
+    exit 1
 done
