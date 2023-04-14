@@ -1,7 +1,7 @@
 #!/usr/bin/env bash
 
 readonly TODAY_DATE='\D{%Y.%m.%d}'
-readonly SCRIPT_DATE="v2023.04.14.r2"
+readonly SCRIPT_DATE="v2023.04.14.r3"
 
 # Build variables
 readonly WORKING="working"
@@ -42,8 +42,13 @@ function build_iso() {
     no_archiso_dir
     echo "Clearing ${WORKING} directory before beginning..."
     sudo rm -rf ${WORKING}
-    echo "Copying ${CONFIG}/archlive to ${PWD}..."
-    sudo cp ${CONFIG}/archlive . -r
+    if [[ ! -d "${CONFIG}" ]]; then
+        echo "JovarkOS configuration directory not found in ${PWD}. Skipping..."
+    else 
+        echo "${CONFIG} directory already exists. Continuing..."
+        echo "Copying ${CONFIG}/archlive to ${PWD}..."
+        sudo cp ${CONFIG}/archlive . -r
+    fi
     sudo mkarchiso -w ${WORKING} -o ${OUTPUT} ${SOURCE} -P "JovarkOS Development Team" -L "JovarkOS Live ${TODAY_DATE}" -A "JovarkOS Live"
     echo "Build complete. ISO is located at ${OUTPUT}/jovarkos-${TODAY_DATE@P}-x86_64.iso"
     ln -s "${OUTPUT}/jovarkos-${TODAY_DATE@P}-x86_64.iso" > ${OUTPUT}/jovarkos-latest.iso
@@ -130,7 +135,7 @@ function version() {
 
 function usage() {
 cat << USAGE
-Usage: ./build_iso.sh [FLAG] [OPTIONS]
+Usage: jbuild [FLAG] [OPTIONS]
 Options:
 -b, --build                     Clean working directory and build fresh ISO image using defaults from the ${SOURCE}/profiledef.sh file
 -r, --run <path to iso>         Run ISO image
@@ -222,6 +227,10 @@ while [[ $# -gt 0 ]]; do
             usage
             exit 1
         ;;
+        *)
+            echo "Invalid option: -$#" >&2
+            usage
+            exit 1
   esac
 done
 
