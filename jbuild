@@ -1,6 +1,6 @@
 #!/usr/bin/env bash
 
-readonly TODAY_DATE='\D{%Y.%m.%d}'
+readonly TODAY_DATE=$(date +%Y.%m.%d)
 readonly SCRIPT_DATE="v2023.04.15.r3"
 
 # Build variables
@@ -43,17 +43,19 @@ function build_iso() {
     echo "Clearing ${WORKING} directory before beginning..."
     sudo rm -rf ${WORKING}
     if [[ ! -d "${CONFIG}" ]]; then
-        echo "JovarkOS configuration directory not found in ${PWD}. Skipping..."
+        echo "JovarkOS configuration directory not found in $(pwd). Skipping..."
     else 
         echo "${CONFIG} directory already exists. Continuing..."
-        echo "Copying ${CONFIG}/archlive to ${PWD}..."
+        echo "Copying ${CONFIG}/archlive to $(pwd)..."
         sudo cp ${CONFIG}/archlive . -r
     fi
     echo "Building ISO..."
     sudo mkarchiso -v -w ${WORKING} -o ${OUTPUT} ${SOURCE} -P "JovarkOS Development Team" -L "JovarkOS Live ${TODAY_DATE}" -A "JovarkOS Live"
     echo "Build complete. ISO is located at ${OUTPUT}/jovarkos-${TODAY_DATE@P}-x86_64.iso"
     sudo chmod -R 777 ${OUTPUT}
-    ln -s "${OUTPUT}/jovarkos-${TODAY_DATE@P}-x86_64.iso" > ${OUTPUT}/jovarkos-latest.iso
+    # Create symlink to latest ISO
+    # ln -s "${OUTPUT}/jovarkos-${TODAY_DATE@P}-x86_64.iso" > ${OUTPUT}/jovarkos-latest.iso
+    clean
 }
 
 function confirm_run() {
