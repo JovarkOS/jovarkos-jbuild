@@ -123,12 +123,12 @@ function profile() {
             cp -r "/usr/share/archiso/configs/$1" $2
             echo "Copied profile $1 to $2"
             echo ""
-            echo "Please edit files in $2 to customize your ISO. Then run 'jbuild -b' from $(pwd) to build your ISO"
+            echo "Please edit files in $2 to customize your ISO. Then run 'jbuild -b' from ${PWD} to build your ISO"
         else
             cp -r "/usr/share/archiso/configs/$1" ${SOURCE}
             echo "Copied profile $1 to ${SOURCE}"
             echo ""
-            echo "Please edit files in ${SOURCE} to customize your ISO. Then run 'jbuild -b' from $(pwd) to build your ISO"
+            echo "Please edit files in ${SOURCE} to customize your ISO. Then run 'jbuild -b' from ${PWD} to build your ISO"
         fi
     else
         list_profiles
