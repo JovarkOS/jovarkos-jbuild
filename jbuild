@@ -173,19 +173,19 @@ done
 # Parse command-line options and arguments, send to functions as needed
 while [[ $# -gt 0 ]]; do
   case "$1" in
-        -b | --build | build)
+        (-b | --build | build)
             build_iso
             exit 0
         ;;
-        -r | --run | run)
+        (-r | --run | run)
             run_iso "$2"
             exit 0
         ;;
-        -c | --clean | clean)
+        (-c | --clean | clean)
             clean
             exit 0
         ;;
-        -p | --profile | profile)
+        (-p | --profile | profile)
             # If no profile is specified, list available profiles
             if (( "${#2}" )); then
                 # If no path is specified, use the default path
@@ -205,20 +205,20 @@ while [[ $# -gt 0 ]]; do
                 exit 1
             fi
         ;;
-        --profiles | profiles)
+        (--profiles | profiles)
             # If no profile is specified, list available profiles
             list_profiles
             exit 1
         ;;
-        -h | --help | help)
+        (-h | --help | help)
             usage
             exit 0
         ;;
-        -v | --version | version)
+        (-v | --version | version)
             version
             exit 0
         ;;
-        *)
+        (*)
             echo "Invalid option: ${1@Q}" >&2
             usage
             exit 1
