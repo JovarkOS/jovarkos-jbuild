@@ -219,7 +219,7 @@ while [[ $# -gt 0 ]]; do
             exit 0
         ;;
         *)
-            echo "Invalid option: $1" >&2
+            echo "Invalid option: ${1@Q}" >&2
             usage
             exit 1
         ;;
