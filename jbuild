@@ -58,7 +58,7 @@ function confirm_run() {
         echo "Running ISO..."
         qemu-system-x86_64 \
         -boot order=d,menu=on,reboot-timeout=5000 \
-        -m "size=3072,slots=0,maxmem=$((3072*1024*1024))" \
+        -m size=3072,slots=0,maxmem=$((3072*1024*1024)) \
         -smp 2 \
         -k en-us \
         -name archiso,process=archiso_0 \
@@ -83,7 +83,7 @@ function confirm_run() {
 function run_iso() {
     qemu-system-x86_64 \
         -boot order=d,menu=on,reboot-timeout=5000 \
-        -m "size=3072,slots=0,maxmem=$((3072*1024*1024))" \
+        -m size=3072,slots=0,maxmem=$((3072*1024*1024)) \
         -smp 2 \
         -k en-us \
         -name archiso,process=archiso_0 \
