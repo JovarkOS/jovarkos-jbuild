@@ -218,16 +218,6 @@ while [[ $# -gt 0 ]]; do
             version
             exit 0
         ;;
-        -\? | --?)
-            echo "Invalid option: -$#" >&2
-            usage
-            exit 1
-        ;;
-        :)
-            echo "Option -$# requires an argument." >&2
-            usage
-            exit 1
-        ;;
         *)
             echo "Invalid option: -$#" >&2
             usage
