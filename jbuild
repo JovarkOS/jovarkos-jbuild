@@ -44,7 +44,7 @@ function build_iso() {
     sudo rm -rf ${WORKING}
     if [[ ! -d "${CONFIG}" ]]; then
         echo "JovarkOS configuration directory not found in $(pwd). Skipping..."
-    else 
+    else
         echo "${CONFIG} directory already exists. Continuing..."
         echo "Copying ${CONFIG}/archlive to $(pwd)..."
         sudo cp ${CONFIG}/archlive . -r
@@ -126,7 +126,7 @@ function profile() {
     if [[ -z "$1" ]]; then
         list_profiles
         exit 1
-    else 
+    else
         if [[ -z "$2" ]]; then
             cp -r "/usr/share/archiso/configs/$1" ${SOURCE}
             echo "Copied profile $1 to ${SOURCE}"
@@ -202,13 +202,13 @@ while [[ $# -gt 0 ]]; do
             if [[ -z "$2" ]]; then
                 list_profiles
                 exit 1
-            else 
+            else
                 # If no path is specified, use the default path
                 if [[ -z "$3" ]]; then
                     PROFILE="$2"
                     profile ${PROFILE}
                     exit 0
-                else 
+                else
                     # If a path is specified, use that path
                     PROFILE="$2"
                     SOURCE="$3"
