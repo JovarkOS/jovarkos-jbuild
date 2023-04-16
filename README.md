@@ -18,8 +18,10 @@ The following are required to use `jbuild`:
 
 * Arch-based distribution
 ```
-Arch, Manjaro, EndevourOS, etc.
+Arch, EndevourOS, etc. 
 ```
+*for Manjaro, install archiso separately: [archiso](https://archlinux.org/packages/extra/any/archiso/download/)*
+
 * make
 
 ```sh
