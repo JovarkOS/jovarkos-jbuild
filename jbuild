@@ -10,7 +10,6 @@ readonly SOURCE="archlive"
 readonly LIVEROOT="airootfs"
 readonly CONFIG="jovarkos-config"
 
-
 function error() {
     printf "$*\n" >&2
 }
