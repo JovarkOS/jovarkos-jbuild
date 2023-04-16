@@ -18,7 +18,7 @@ The following are required to use `jbuild`:
 
 * Arch-based distribution
 ```
-Arch, Manjaro, EndevourOS, etc.
+Arch, EndeavourOS, etc.
 ```
 * make
 
