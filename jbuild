@@ -171,7 +171,7 @@ done
 (( m )) && exit 1
 
 # Parse command-line options and arguments, send to functions as needed
-while [[ $# -gt 0 ]]; do
+while (( $# )); do
   case "$1" in
         (-b | --build | build)
             build_iso
@@ -226,9 +226,9 @@ while [[ $# -gt 0 ]]; do
   esac
 done
 
-# If no arguments are provided, print help and exit
-if [[ $# -eq 0 ]]; then
+(( $# )) || {
+
     error "ERROR: Please provide an argument.\n"
     usage
     exit 1
-fi
+}
