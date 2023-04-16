@@ -191,13 +191,10 @@ while (( $# )); do
                 # If no path is specified, use the default path
                 if (( "${#3}" )); then
                     # If a path is specified, use that path
-                    PROFILE="$2"
-                    SOURCE="$3"
-                    profile ${PROFILE} ${SOURCE}
+                    profile "$2" "$3"
                     exit 0
                 else
-                    PROFILE="$2"
-                    profile ${PROFILE}
+                    profile "$2"
                     exit 0
                 fi
             else
