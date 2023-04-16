@@ -176,15 +176,15 @@ while [[ $# -gt 0 ]]; do
         -b | --build | build)
             build_iso
             exit 0
-            ;;
+        ;;
         -r | --run | run)
             run_iso "$2"
             exit 0
-            ;;
+        ;;
         -c | --clean | clean)
             clean
             exit 0
-            ;;
+        ;;
         -p | --profile | profile)
             # If no profile is specified, list available profiles
             if (( "${#2}" )); then
@@ -204,16 +204,16 @@ while [[ $# -gt 0 ]]; do
                 list_profiles
                 exit 1
             fi
-            ;;
+        ;;
         --profiles | profiles)
             # If no profile is specified, list available profiles
             list_profiles
             exit 1
-            ;;
+        ;;
         -h | --help | help)
             usage
             exit 0
-            ;;
+        ;;
         -v | --version | version)
             version
             exit 0
