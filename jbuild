@@ -123,22 +123,22 @@ ls /usr/share/archiso/configs/
 
 function profile() {
     # If no profile is specified, list available profiles
-    if [[ -z "$1" ]]; then
-        list_profiles
-        exit 1
-    else
-        if [[ -z "$2" ]]; then
-            cp -r "/usr/share/archiso/configs/$1" ${SOURCE}
-            echo "Copied profile $1 to ${SOURCE}"
-            echo ""
-            echo "Please edit files in ${SOURCE} to customize your ISO. Then run 'jbuild -b' from $(pwd) to build your ISO"
-        else
+    if (( "${#1}" )); then
+        if (( "${#2}" )); then
             # If no path is specified, use the default path
             cp -r "/usr/share/archiso/configs/$1" $2
             echo "Copied profile $1 to $2"
             echo ""
             echo "Please edit files in $2 to customize your ISO. Then run 'jbuild -b' from $(pwd) to build your ISO"
+        else
+            cp -r "/usr/share/archiso/configs/$1" ${SOURCE}
+            echo "Copied profile $1 to ${SOURCE}"
+            echo ""
+            echo "Please edit files in ${SOURCE} to customize your ISO. Then run 'jbuild -b' from $(pwd) to build your ISO"
         fi
+    else
+        list_profiles
+        exit 1
     fi
 }
 
@@ -199,22 +199,22 @@ while [[ $# -gt 0 ]]; do
             ;;
         -p | --profile | profile)
             # If no profile is specified, list available profiles
-            if [[ -z "$2" ]]; then
-                list_profiles
-                exit 1
-            else
+            if (( "${#2}" )); then
                 # If no path is specified, use the default path
-                if [[ -z "$3" ]]; then
-                    PROFILE="$2"
-                    profile ${PROFILE}
-                    exit 0
-                else
+                if (( "${#3}" )); then
                     # If a path is specified, use that path
                     PROFILE="$2"
                     SOURCE="$3"
                     profile ${PROFILE} ${SOURCE}
                     exit 0
+                else
+                    PROFILE="$2"
+                    profile ${PROFILE}
+                    exit 0
                 fi
+            else
+                list_profiles
+                exit 1
             fi
             ;;
         --profiles | profiles)
