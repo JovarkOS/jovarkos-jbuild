@@ -105,7 +105,7 @@ function run_iso() {
         -enable-kvm \
         -serial stdio \
         -no-reboot \
-        -cdrom "${OPTARG}"
+        -cdrom "$1"
 }
 
 function list_profiles() {
@@ -190,7 +190,7 @@ while [[ $# -gt 0 ]]; do
             exit 0
             ;;
         -r | --run | run)
-            run_iso
+            run_iso "$2"
             exit 0
             ;;
         -c | --clean | clean)
