@@ -47,8 +47,6 @@ function build_iso() {
     sudo mkarchiso -v -w ${WORKING} -o ${OUTPUT} ${SOURCE} -P "JovarkOS Development Team" -L "JovarkOS Live ${TODAY_DATE}" -A "JovarkOS Live"
     echo "Build complete. ISO is located at ${OUTPUT}/jovarkos-${TODAY_DATE}-x86_64.iso"
     sudo chmod -R 777 ${OUTPUT}
-    # Create symlink to latest ISO
-    # ln -s "${OUTPUT}/jovarkos-${TODAY_DATE@P}-x86_64.iso" > ${OUTPUT}/jovarkos-latest.iso
     clean
 }
 
