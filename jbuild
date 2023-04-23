@@ -216,7 +216,7 @@ while (( $# )); do
             exit 0
         ;;
         (*)
-            echo "Invalid option: ${1@Q}" >&2
+            error "Invalid option: ${1@Q}"
             usage
             exit 1
         ;;
