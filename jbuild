@@ -11,7 +11,7 @@ readonly LIVEROOT="airootfs"
 readonly CONFIG="jovarkos-config"
 
 function error() {
-    printf "%s\n" "$*" >&2
+    printf "%b\n" "[\e[1m\e[91mERROR\e[0m]: ${0##*/}: $*" >&2
 }
 
 function no_archiso_dir() {
@@ -225,7 +225,7 @@ done
 
 (( $# )) || {
 
-    error "ERROR: Please provide an argument.\n"
+    error "Please provide an argument.\n"
     usage
     exit 1
 }
