@@ -121,14 +121,20 @@ function profile() {
         if (( "${#2}" )); then
             # If no path is specified, use the default path
             cp -r "/usr/share/archiso/configs/$1" $2
-            echo "Copied profile $1 to $2"
-            echo ""
-            echo "Please edit files in $2 to customize your ISO. Then run 'jbuild -b' from ${PWD} to build your ISO"
+
+            cat << MESSAGE
+Copied profile $1 to $2
+
+Please edit files in $2 to customize your ISO. Then run 'jbuild -b' from ${PWD} to build your ISO
+MESSAGE
         else
             cp -r "/usr/share/archiso/configs/$1" ${SOURCE}
-            echo "Copied profile $1 to ${SOURCE}"
-            echo ""
-            echo "Please edit files in ${SOURCE} to customize your ISO. Then run 'jbuild -b' from ${PWD} to build your ISO"
+
+            cat << MESSAGE
+Copied profile $1 to ${SOURCE}
+
+Please edit files in ${SOURCE} to customize your ISO. Then run 'jbuild -b' from ${PWD} to build your ISO
+MESSAGE
         fi
     else
         list_profiles
