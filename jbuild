@@ -15,7 +15,7 @@ function error() {
 }
 
 function no_archiso_dir() {
-   if [[ ! -d "${SOURCE}" ]]; then
+    [[ -d "${SOURCE}" ]] || {
 cat << MENU
 Please select profile to build upon:
     releng (Used in Official Monthly Builds)
@@ -24,7 +24,7 @@ MENU
         read -r -p "Profile: " PROFILE
         cp -r "/usr/share/archiso/configs/${PROFILE}" ${SOURCE}
         echo "Copied profile ${PROFILE} to ${SOURCE}"
-   fi
+   }
 }
 
 function clean () {
@@ -36,12 +36,12 @@ function build_iso() {
     no_archiso_dir
     echo "Clearing ${WORKING} directory before beginning..."
     sudo rm -rf ${WORKING}
-    if [[ ! -d "${CONFIG}" ]]; then
-        echo "JovarkOS configuration directory not found in $(pwd). Skipping..."
-    else
+    if [[ -d "${CONFIG}" ]]; then
         echo "${CONFIG} directory already exists. Continuing..."
         echo "Copying ${CONFIG}/archlive to $(pwd)..."
         sudo cp ${CONFIG}/archlive . -r
+    else
+        echo "JovarkOS configuration directory not found in $(pwd). Skipping..."
     fi
     echo "Building ISO..."
     sudo mkarchiso -v -w ${WORKING} -o ${OUTPUT} ${SOURCE} -P "JovarkOS Development Team" -L "JovarkOS Live ${TODAY_DATE}" -A "JovarkOS Live"
