@@ -109,8 +109,19 @@ for more information
     - Profiles live in the /usr/share/archiso/configs/ directory. Listed below is a list of profiles found on this machine.
 
 OPTIONS
-echo "Available profiles:"
-ls /usr/share/archiso/configs/
+    echo "Available profiles:"
+
+    # Prevent globbing errors
+    [[ -d /usr/share/archiso/configs && -r /usr/share/archiso/configs ]] && {
+
+        [[ -s /usr/share/archiso/configs ]] && {
+
+            profiles=(/usr/share/archiso/configs/*)
+
+            # Strip directory components
+            printf '%s\n' "${profiles[@]##*/}"
+        }
+    }
 }
 
 function profile() {
