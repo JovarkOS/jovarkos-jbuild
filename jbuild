@@ -14,40 +14,9 @@ function error() {
     printf "%b\n" "[\e[1m\e[91mERROR\e[0m]: ${0##*/}: $*" >&2
 }
 
-function no_archiso_dir() {
-    [[ -d "${SOURCE}" ]] || {
-cat << MENU
-Please select profile to build upon:
-    releng (Used in Official Monthly Builds)
-    baseline (Minimal live configuration)
-MENU
-        read -r -p "Profile: " PROFILE
-        cp -r "/usr/share/archiso/configs/${PROFILE}" ${SOURCE}
-        echo "Copied profile ${PROFILE} to ${SOURCE}"
-   }
-}
-
 function clean () {
     echo "Cleaning ${WORKING} directory..."
     sudo rm -rf ${WORKING}
-}
-
-function build_iso() {
-    no_archiso_dir
-    echo "Clearing ${WORKING} directory before beginning..."
-    sudo rm -rf ${WORKING}
-    if [[ -d "${CONFIG}" ]]; then
-        echo "${CONFIG} directory already exists. Continuing..."
-        echo "Copying ${CONFIG}/archlive to $(pwd)..."
-        sudo cp ${CONFIG}/archlive . -r
-    else
-        echo "JovarkOS configuration directory not found in $(pwd). Skipping..."
-    fi
-    echo "Building ISO..."
-    sudo mkarchiso -v -w ${WORKING} -o ${OUTPUT} ${SOURCE} -P "JovarkOS Development Team" -L "JovarkOS Live ${TODAY_DATE}" -A "JovarkOS Live"
-    echo "Build complete. ISO is located at ${OUTPUT}/jovarkos-${TODAY_DATE}-x86_64.iso"
-    sudo chmod -R 777 ${OUTPUT}
-    clean
 }
 
 function confirm_run() {
@@ -151,10 +120,6 @@ MESSAGE
     fi
 }
 
-function version() {
-    echo "JovarkOS ISO build script ${SCRIPT_DATE}"
-}
-
 function usage() {
 cat << USAGE
 Usage: jbuild [FLAG] [OPTIONS]
@@ -189,7 +154,40 @@ done
 while (( $# )); do
   case "$1" in
         (-b | --build | build)
-            build_iso
+            [[ -d "${SOURCE}" ]] || {
+                 cat << MENU
+Please select profile to build upon:
+    releng (Used in Official Monthly Builds)
+    baseline (Minimal live configuration)
+MENU
+                 read -r -p "Profile: " PROFILE
+
+                 cp -r "/usr/share/archiso/configs/${PROFILE}" ${SOURCE}
+                 echo "Copied profile ${PROFILE} to ${SOURCE}"
+            }
+
+            echo "Clearing ${WORKING} directory before beginning..."
+
+            sudo rm -rf ${WORKING}
+
+            if [[ -d "${CONFIG}" ]]; then
+                echo "${CONFIG} directory already exists. Continuing..."
+                echo "Copying ${CONFIG}/archlive to $(pwd)..."
+                sudo cp ${CONFIG}/archlive . -r
+
+            else
+                echo "JovarkOS configuration directory not found in $(pwd). Skipping..."
+
+            fi
+
+            echo "Building ISO..."
+            sudo mkarchiso -v -w ${WORKING} -o ${OUTPUT} ${SOURCE} -P "JovarkOS Development Team" -L "JovarkOS Live ${TODAY_DATE}" -A "JovarkOS Live"
+            echo "Build complete. ISO is located at ${OUTPUT}/jovarkos-${TODAY_DATE}-x86_64.iso"
+
+            sudo chmod -R 777 ${OUTPUT}
+
+            clean
+
             exit 0
         ;;
         (-r | --run | run)
@@ -227,7 +225,7 @@ while (( $# )); do
             exit 0
         ;;
         (-v | --version | version)
-            version
+            echo "JovarkOS ISO build script ${SCRIPT_DATE}"
             exit 0
         ;;
         (*)
