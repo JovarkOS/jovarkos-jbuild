@@ -11,73 +11,12 @@ readonly LIVEROOT="airootfs"
 readonly CONFIG="jovarkos-config"
 
 function error() {
-    printf "$*\n" >&2
-}
-
-function no_archiso_dir() {
-   if [[ ! -d "${SOURCE}" ]]; then
-cat << MENU
-Please select profile to build upon:
-    releng (Used in Official Monthly Builds)
-    baseline (Minimal live configuration)
-MENU
-        read -r -p "Profile: " PROFILE
-        cp -r "/usr/share/archiso/configs/${PROFILE}" ${SOURCE}
-        echo "Copied profile ${PROFILE} to ${SOURCE}"
-   fi
+    printf "%b\n" "[\e[1m\e[91mERROR\e[0m]: ${0##*/}: $*" >&2
 }
 
 function clean () {
     echo "Cleaning ${WORKING} directory..."
     sudo rm -rf ${WORKING}
-}
-
-function build_iso() {
-    no_archiso_dir
-    echo "Clearing ${WORKING} directory before beginning..."
-    sudo rm -rf ${WORKING}
-    if [[ ! -d "${CONFIG}" ]]; then
-        echo "JovarkOS configuration directory not found in $(pwd). Skipping..."
-    else
-        echo "${CONFIG} directory already exists. Continuing..."
-        echo "Copying ${CONFIG}/archlive to $(pwd)..."
-        sudo cp ${CONFIG}/archlive . -r
-    fi
-    echo "Building ISO..."
-    sudo mkarchiso -v -w ${WORKING} -o ${OUTPUT} ${SOURCE} -P "JovarkOS Development Team" -L "JovarkOS Live ${TODAY_DATE}" -A "JovarkOS Live"
-    echo "Build complete. ISO is located at ${OUTPUT}/jovarkos-${TODAY_DATE@P}-x86_64.iso"
-    sudo chmod -R 777 ${OUTPUT}
-    # Create symlink to latest ISO
-    # ln -s "${OUTPUT}/jovarkos-${TODAY_DATE@P}-x86_64.iso" > ${OUTPUT}/jovarkos-latest.iso
-    clean
-}
-
-function confirm_run() {
-    read -r -p "Build complete. Would you like to run the ISO? y/N: "
-    if [[ "${REPLY}" = "y" ]]; then
-        echo "Running ISO..."
-        qemu-system-x86_64 \
-        -boot order=d,menu=on,reboot-timeout=5000 \
-        -m size=3072,slots=0,maxmem=$((3 << 20)) \
-        -smp 2 \
-        -k en-us \
-        -name archiso,process=archiso_0 \
-        -device virtio-scsi-pci,id=scsi0 \
-        -display sdl \
-        -vga virtio \
-        -audiodev pa,id=snd0 \
-        -device ich9-intel-hda \
-        -device hda-output,audiodev=snd0 \
-        -device virtio-net-pci,romfile=,netdev=net0 -netdev user,id=net0 \
-        -machine type=q35,smm=on,accel=kvm,usb=on,pcspk-audiodev=snd0 \
-        -global ICH9-LPC.disable_s3=1 \
-        -enable-kvm \
-        -serial stdio \
-        -no-reboot \
-        -cdrom ${OUTPUT}/jovarkos-${TODAY_DATE@P}-x86_64.iso
-    else
-        echo "Exiting..."
-    fi
 }
 
 function run_iso() {
@@ -111,8 +50,19 @@ for more information
     - Profiles live in the /usr/share/archiso/configs/ directory. Listed below is a list of profiles found on this machine.
 
 OPTIONS
-echo "Available profiles:"
-ls /usr/share/archiso/configs/
+    echo "Available profiles:"
+
+    # Prevent globbing errors
+    [[ -d /usr/share/archiso/configs && -r /usr/share/archiso/configs ]] && {
+
+        [[ -s /usr/share/archiso/configs ]] && {
+
+            profiles=(/usr/share/archiso/configs/*)
+
+            # Strip directory components
+            printf '%s\n' "${profiles[@]##*/}"
+        }
+    }
 }
 
 function profile() {
@@ -121,23 +71,25 @@ function profile() {
         if (( "${#2}" )); then
             # If no path is specified, use the default path
             cp -r "/usr/share/archiso/configs/$1" $2
-            echo "Copied profile $1 to $2"
-            echo ""
-            echo "Please edit files in $2 to customize your ISO. Then run 'jbuild -b' from ${PWD} to build your ISO"
+
+            cat << MESSAGE
+Copied profile $1 to $2
+
+Please edit files in $2 to customize your ISO. Then run 'jbuild -b' from ${PWD} to build your ISO
+MESSAGE
         else
             cp -r "/usr/share/archiso/configs/$1" ${SOURCE}
-            echo "Copied profile $1 to ${SOURCE}"
-            echo ""
-            echo "Please edit files in ${SOURCE} to customize your ISO. Then run 'jbuild -b' from ${PWD} to build your ISO"
+
+            cat << MESSAGE
+Copied profile $1 to ${SOURCE}
+
+Please edit files in ${SOURCE} to customize your ISO. Then run 'jbuild -b' from ${PWD} to build your ISO
+MESSAGE
         fi
     else
         list_profiles
         exit 1
     fi
-}
-
-function version() {
-    echo "JovarkOS ISO build script ${SCRIPT_DATE}"
 }
 
 function usage() {
@@ -174,7 +126,40 @@ done
 while (( $# )); do
   case "$1" in
         (-b | --build | build)
-            build_iso
+            [[ -d "${SOURCE}" ]] || {
+                 cat << MENU
+Please select profile to build upon:
+    releng (Used in Official Monthly Builds)
+    baseline (Minimal live configuration)
+MENU
+                 read -r -p "Profile: " PROFILE
+
+                 cp -r "/usr/share/archiso/configs/${PROFILE}" ${SOURCE}
+                 echo "Copied profile ${PROFILE} to ${SOURCE}"
+            }
+
+            echo "Clearing ${WORKING} directory before beginning..."
+
+            sudo rm -rf ${WORKING}
+
+            if [[ -d "${CONFIG}" ]]; then
+                echo "${CONFIG} directory already exists. Continuing..."
+                echo "Copying ${CONFIG}/archlive to $(pwd)..."
+                sudo cp ${CONFIG}/archlive . -r
+
+            else
+                echo "JovarkOS configuration directory not found in $(pwd). Skipping..."
+
+            fi
+
+            echo "Building ISO..."
+            sudo mkarchiso -v -w ${WORKING} -o ${OUTPUT} ${SOURCE} -P "JovarkOS Development Team" -L "JovarkOS Live ${TODAY_DATE}" -A "JovarkOS Live"
+            echo "Build complete. ISO is located at ${OUTPUT}/jovarkos-${TODAY_DATE}-x86_64.iso"
+
+            sudo chmod -R 777 ${OUTPUT}
+
+            clean
+
             exit 0
         ;;
         (-r | --run | run)
@@ -212,11 +197,11 @@ while (( $# )); do
             exit 0
         ;;
         (-v | --version | version)
-            version
+            echo "JovarkOS ISO build script ${SCRIPT_DATE}"
             exit 0
         ;;
         (*)
-            echo "Invalid option: ${1@Q}" >&2
+            error "Invalid option: ${1@Q}"
             usage
             exit 1
         ;;
@@ -225,7 +210,7 @@ done
 
 (( $# )) || {
 
-    error "ERROR: Please provide an argument.\n"
+    error "Please provide an argument.\n"
     usage
     exit 1
 }
